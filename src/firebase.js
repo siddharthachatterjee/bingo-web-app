@@ -1,5 +1,5 @@
-//import firebase fr
-var firebaseConfig = {
+import firebase from "firebase";
+const firebaseConfig = {
     apiKey: "AIzaSyApFmjEneYCwJPGdZYEMl44YkMXX4uplG0",
     authDomain: "bingo-f19c5.firebaseapp.com",
     databaseURL: "https://bingo-f19c5.firebaseio.com",
@@ -12,3 +12,5 @@ var firebaseConfig = {
   // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+
+export default firebase;
