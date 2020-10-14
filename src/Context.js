@@ -29,19 +29,20 @@ export const ContextProvider = (props) => {
     const history = useHistory();
     const socket = require("socket.io-client")(`ws://${API_URL.split("//")[1]}`);
     const [game, setGame] = useState(null);
-    const [gameRoom, setGameRoom] = useState(localStorage.getItem("current-game") || "");
+    const [gameRoom, setGameRoom] = useState(null);
     const [loggingIn, setLoggingIn] = useState(false);
     const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        
+    }, [])
     
     useEffect(() => {
-        console.log(gameRoom)
-        socket.on("something", (data) => console.log(data))
         if (gameRoom) {
             socket.on(`game${gameRoom}-updated`, (data) => {
                 setGame(data);
-            //    console.log(data);
+                console.log(data);
             })
-            ///fetch(`${API_URL}/join/${gameRoom}?name=hi&id=7388`, {method: "PUT"})
         }
     // eslint-disable-next-line
     }, [gameRoom])
@@ -50,6 +51,19 @@ export const ContextProvider = (props) => {
         firebase.auth().onAuthStateChanged(firebaseUser => {
             setUser(firebaseUser)
             setLoaded(true);
+            fetch(`${API_URL}/games`)
+                .then(res => res.json())
+                .then(data => {
+                    for (let room in data) {
+                        //console.log(data[room])
+                        if (data[room].players.some(player => player.id === firebaseUser.uid)) {
+                        
+                            setGameRoom(room);
+                            setGame(data[room])
+                            break;
+                        };
+                    }
+                })
         })
     }, [])
     const [password, setPassword] = useState("");

@@ -20,10 +20,10 @@ export default () => {
         <button onClick = {signIn}> Sign In </button>
         <button onClick = {signUp}> Sign Up </button>
         <br />
-        {loggingIn && "Logging in..."}
+        {loggingIn ? "Logging in..." :         
         <div style = {{color: "red"}}>
             {error.message}
-        </div>
+        </div>}
         </>
     );
 }

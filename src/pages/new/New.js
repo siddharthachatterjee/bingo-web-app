@@ -6,14 +6,12 @@ import {Redirect} from "react-router-dom";
 import "./New.css";
 
 export default () => {
-    const {user, API_URL, setGameRoom, history} = useContext(Context);
+    const {user, API_URL} = useContext(Context);
     function createGame() {
         fetch(`${API_URL}/new?host=${user.displayName}&hostid=${user.uid}`, {method: "POST"})
             .then(res => res.json())
             .then(game => {
-                localStorage.setItem("current-game", game.key)
-                setGameRoom(game.key)
-                history.push(`/game/${game.key}`)
+                window.location = "/play"
             })
     }
     return (

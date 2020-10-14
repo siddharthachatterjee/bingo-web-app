@@ -20,6 +20,7 @@ import './App.css';
 import { Context } from './Context';
 import Auth from './pages/auth/Auth';
 import Home from './pages/home/Home';
+import Join from './pages/join/Join';
 import New from './pages/new/New';
 
 
@@ -36,6 +37,9 @@ function App() {
       </Route>
       <Route path = "/auth">
         <Auth />
+      </Route>
+      <Route path = "/join">
+        <Join />
       </Route>
     </Switch>}
     </>
