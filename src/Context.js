@@ -1,3 +1,19 @@
+/* Siddhartha Chatterjee
+ * __________________
+ * @Copyright Siddhartha Chatterjee
+ *  [2020] - [2025] Siddhartha Chatterjee
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Siddhartha Chatterjee,
+ * The intellectual and technical concepts contained
+ * herein are proprietary to Siddhartha Chatterjee
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Siddhartha Chatterjee.
+ */
 import React, { useEffect, useState } from "react";
 
 import {useHistory} from "react-router-dom";
@@ -18,11 +34,16 @@ export const ContextProvider = (props) => {
     const [loaded, setLoaded] = useState(false);
     
     useEffect(() => {
-        socket.on(`game${gameRoom}-updated`, (data) => {
-            setGame(data);
-            console.log(data);
-        })
-        
+        console.log(gameRoom)
+        socket.on("something", (data) => console.log(data))
+        if (gameRoom) {
+            socket.on(`game${gameRoom}-updated`, (data) => {
+                setGame(data);
+            //    console.log(data);
+            })
+            ///fetch(`${API_URL}/join/${gameRoom}?name=hi&id=7388`, {method: "PUT"})
+        }
+    // eslint-disable-next-line
     }, [gameRoom])
     const [user, setUser] = useState(firebase.auth().currentUser)
     useEffect(() => {
