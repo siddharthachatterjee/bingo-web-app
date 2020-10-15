@@ -15,17 +15,18 @@
  * from Siddhartha Chatterjee.
  */
 import React, { useContext } from 'react';
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import './App.css';
 import { Context } from './Context';
 import Auth from './pages/auth/Auth';
 import Home from './pages/home/Home';
 import Join from './pages/join/Join';
 import New from './pages/new/New';
+import Play from './pages/play/Play';
 
 
 function App() {
-  const {loaded} = useContext(Context);
+  const {loaded, gameRoom} = useContext(Context);
   return (
     <>
     {loaded && <Switch>
@@ -41,7 +42,11 @@ function App() {
       <Route path = "/join">
         <Join />
       </Route>
+      <Route path = "/play">
+        <Play />
+      </Route>
     </Switch>}
+    {gameRoom && <Redirect to = "/play" />}
     </>
   );
 }

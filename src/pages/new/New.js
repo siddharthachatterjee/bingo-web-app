@@ -11,7 +11,9 @@ export default () => {
         fetch(`${API_URL}/new?host=${user.displayName}&hostid=${user.uid}`, {method: "POST"})
             .then(res => res.json())
             .then(game => {
-                window.location = "/play"
+                
+                window.location = "/play";
+                alert("Invite people to play by going to http://localhost:3000/join and entering code " + game.key);
             })
     }
     return (

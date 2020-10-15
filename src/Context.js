@@ -25,18 +25,17 @@ export const Context = React.createContext();
 export const ContextProvider = (props) => {
     const [error, setError] = useState("");
     const [email, setEmail] = useState("");
-    const API_URL = "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
+    const API_URL = process.env.NODE_ENV === 'development'? "http://localhost:8000" : "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
     const history = useHistory();
-    const socket = require("socket.io-client")(`ws://${API_URL.split("//")[1]}`);
+    const socket = require("socket.io-client")(`ws://${API_URL.split("//")[1]}`, {
+        transports: ["polling"]
+    });
     const [game, setGame] = useState(null);
     const [gameRoom, setGameRoom] = useState(null);
     const [loggingIn, setLoggingIn] = useState(false);
     const [loaded, setLoaded] = useState(false);
 
-    useEffect(() => {
-        
-    }, [])
-    
+
     useEffect(() => {
         if (gameRoom) {
             socket.on(`game${gameRoom}-updated`, (data) => {
@@ -48,24 +47,27 @@ export const ContextProvider = (props) => {
     }, [gameRoom])
     const [user, setUser] = useState(firebase.auth().currentUser)
     useEffect(() => {
+        
         firebase.auth().onAuthStateChanged(firebaseUser => {
             setUser(firebaseUser)
             setLoaded(true);
-            fetch(`${API_URL}/games`)
-                .then(res => res.json())
-                .then(data => {
-                    for (let room in data) {
-                        //console.log(data[room])
-                        if (data[room].players.some(player => player.id === firebaseUser.uid)) {
-                        
-                            setGameRoom(room);
-                            setGame(data[room])
-                            break;
-                        };
-                    }
-                })
+            if (firebaseUser) {
+                fetch(`${API_URL}/games`)
+                    .then(res => res.json())
+                    .then(data => {
+                        for (let room in data) {
+                            //console.log(data[room])
+                            if (data[room].players.some(player => player.id === firebaseUser.uid)) {
+                            
+                                setGameRoom(room);
+                                setGame(data[room])
+                                break;
+                            };
+                        }
+                    })
+                }
         })
-    }, [])
+    }, [API_URL])
     const [password, setPassword] = useState("");
     function signIn() {
         setLoggingIn(true);
@@ -73,7 +75,8 @@ export const ContextProvider = (props) => {
             .then(() => {
                 setLoggingIn(false);
                 setUser(firebase.auth().currentUser);
-                history.push(window.location.search.split("=")[1] || "/profile")
+               
+                window.location = window.location.search.split("=")[1] || "/profile"
             })
             .catch(err => {
                 setLoggingIn(false);
@@ -90,7 +93,7 @@ export const ContextProvider = (props) => {
                     displayName: email.split("@")[0]
                 })
                 setUser(firebase.auth().currentUser);
-                history.push(window.location.search.split("=")[1] || "/profile")
+                window.location = window.location.search.split("=")[1] || "/profile"
             })
             .catch(err => {
                 setLoggingIn(false);
