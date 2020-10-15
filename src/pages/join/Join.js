@@ -16,7 +16,7 @@ export default () => {
                 return res.text()
             })
             .then((data) => {
-                console.log(data)
+                console.error(data);
                 if (!data.length) {
                     window.location = "/play"
                 }

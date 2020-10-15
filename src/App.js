@@ -43,7 +43,7 @@ function App() {
         <Join />
       </Route>
       <Route path = "/play">
-        <Play />
+        {gameRoom? <Play /> : <Redirect to = "/" />}
       </Route>
     </Switch>}
     {gameRoom && <Redirect to = "/play" />}
