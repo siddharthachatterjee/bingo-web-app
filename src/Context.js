@@ -88,10 +88,10 @@ export const ContextProvider = (props) => {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(() => {
                 setLoggingIn(false);
-                firebase.auth().currentUser.sendEmailVerification();
                 firebase.auth().currentUser.updateProfile({
                     displayName: email.split("@")[0]
                 })
+                firebase.auth().currentUser.sendEmailVerification();
                 setUser(firebase.auth().currentUser);
                 window.location = window.location.search.split("=")[1] || "/profile"
             })
