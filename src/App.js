@@ -29,7 +29,9 @@ function App() {
   const {loaded, gameRoom} = useContext(Context);
   return (
     <>
-    {loaded && <Switch>
+    {gameRoom && <Redirect to = "/play" />}
+    {loaded && 
+    <Switch>
       <Route exact path = "/">
         <Home />
       </Route>
@@ -46,7 +48,6 @@ function App() {
         {gameRoom? <Play /> : <Redirect to = "/" />}
       </Route>
     </Switch>}
-    {gameRoom && <Redirect to = "/play" />}
     </>
   );
 }

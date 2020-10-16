@@ -25,26 +25,42 @@ export const Context = React.createContext();
 export const ContextProvider = (props) => {
     const [error, setError] = useState("");
     const [email, setEmail] = useState("");
-    const API_URL = process.env.NODE_ENV === "development"? "http://localhost:8000" : "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
+    const API_URL = process.env.NODE_ENV === "development" ? "http://localhost:8000" : "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
     const history = useHistory();
     const socket = require("socket.io-client")(`ws://${API_URL.split("//")[1]}`, {
-        transports: ["polling"]
+        transports: ["polling", "websocket"]
     });
     const [game, setGame] = useState(null);
+    const [currentPlayer, setCurrentPlayer] = useState(null);
     const [gameRoom, setGameRoom] = useState(null);
     const [loggingIn, setLoggingIn] = useState(false);
     const [loaded, setLoaded] = useState(false);
-
+    const [timeTillNext, setTimeTillNext] = useState(0);
+    const [started, setStarted] = useState(false);
 
     useEffect(() => {
         if (gameRoom) {
             socket.on(`game${gameRoom}-updated`, (data) => {
                 setGame(data);
-                console.log(data);
+                if (data.started && !started) setStarted(true)
+                setCurrentPlayer(data.players.find(player => player.id === user.uid))
+              //  console.log(data);
             })
         }
     // eslint-disable-next-line
     }, [gameRoom])
+    useEffect(() => {
+        if (started && game.availableNumbers.length) {
+            if (timeTillNext === 0) {
+                setTimeTillNext(5);
+            } else {
+                setTimeout(() => {
+                    setTimeTillNext(prev => prev - 1);
+                }, 1000)
+            }
+        }
+    // eslint-disable-next-line
+    }, [started, timeTillNext])
     const [user, setUser] = useState(firebase.auth().currentUser)
     useEffect(() => {
         
@@ -57,8 +73,9 @@ export const ContextProvider = (props) => {
                     .then(data => {
                         for (let room in data) {
                             //console.log(data[room])
-                            if (data[room].players.some(player => player.id === firebaseUser.uid)) {
-                            
+                            let player = data[room].players.find(player => player.id === firebaseUser.uid);
+                            if (player) {
+                                setCurrentPlayer(player)
                                 setGameRoom(room);
                                 setGame(data[room])
                                 break;
@@ -93,8 +110,8 @@ export const ContextProvider = (props) => {
                 }).then(() => {
                     firebase.auth().currentUser.sendEmailVerification();
                     setUser(firebase.auth().currentUser);
+                    window.location = window.location.search.split("=")[1] || "/profile"
                 })
-                window.location = window.location.search.split("=")[1] || "/profile"
             })
             .catch(err => {
                 setLoggingIn(false);
@@ -106,6 +123,7 @@ export const ContextProvider = (props) => {
             error, setError, 
             email, setEmail, 
             user, 
+            currentPlayer,
             password, setPassword, 
             signIn, 
             signUp,
@@ -113,6 +131,7 @@ export const ContextProvider = (props) => {
             game,
             gameRoom,
             setGameRoom,
+            timeTillNext,
             history,
             loggingIn,
             loaded
