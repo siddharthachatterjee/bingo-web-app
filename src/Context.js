@@ -55,7 +55,12 @@ export const ContextProvider = (props) => {
     useEffect(() => {
         if (started && game.availableNumbers.length) {
             if (timeTillNext === 0) {
-                setTimeTillNext(5);
+                fetch(`${API_URL}/games/${gameRoom}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        setGame(data);
+                        setTimeTillNext(5);
+                    })
             } else {
                 setTimeout(() => {
                     setTimeTillNext(prev => prev - 1);
