@@ -5,13 +5,20 @@ import "./Play.css";
 
 export default () => {
     const {game, API_URL, currentPlayer, timeTillNext} = useContext(Context);
-    function start(game) {
+    function start() {
        // console.log(game.key)
         fetch(`${API_URL}/start/${game.key}`, {method: "PUT"})
     }
-    function buyTicket(game, e) {
-        if (e.target.value === "buy")
+    function buyTicket() {
+      //  if (e.target.value === "buy")
         fetch(`${API_URL}/buy/${game.key}?playerid=${currentPlayer.id}`, {method: "PUT"})
+    }
+    function callBingo() {
+        fetch(`${API_URL}/call-bingo/${game.key}?playerid=${currentPlayer.id}`, {method:"PUT"})
+            .then(res => res.text())
+            .then(data => {
+                console.log(data);
+            })
     }
     return (
         <>
@@ -33,11 +40,12 @@ export default () => {
             <> 
             <h2> Last number called: {game.lastNumberCalled}</h2>
             <h4> Next number will be called in {timeTillNext? timeTillNext : "calculating..."} </h4>
+            <button onClick = {callBingo}> Call Bingo(This will gain you money if you have 5 in a row or full house) </button>
             </>:
             !game.ended && <>
             
-            <button  onClick = {() => start(game)}> Start Game </button>
-            {currentPlayer.money > 2 && <button value = "buy"onClick = {(e) => buyTicket(game, e)}> Buy Ticket (Costs $2)</button>}
+            <button  onClick = {start}> Start Game </button>
+            {currentPlayer.money > 2 && <button value = "buy"onClick = {buyTicket}> Buy Ticket (Costs $2)</button>}
             </>}
             
             <h3> Your money: ${currentPlayer.money}</h3>

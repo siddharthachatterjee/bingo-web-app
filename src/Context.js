@@ -45,6 +45,9 @@ export const ContextProvider = (props) => {
                 if (data.started && !started) setStarted(true)
                 setCurrentPlayer(data.players.find(player => player.id === user.uid))
               //  console.log(data);
+            });
+            socket.on(`full-house-${gameRoom}`, player => {
+                alert(`${player.name} achieved full house and gained +$${player.increase}`)
             })
         }
     // eslint-disable-next-line
@@ -88,6 +91,7 @@ export const ContextProvider = (props) => {
     const [password, setPassword] = useState("");
     function signIn() {
         setLoggingIn(true);
+        setError("");
         firebase.auth().signInWithEmailAndPassword(email, password)
             .then(() => {
                 setLoggingIn(false);
@@ -102,6 +106,7 @@ export const ContextProvider = (props) => {
     }
     function signUp() {
         setLoggingIn(true);
+        setError("")
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(() => {
                 setLoggingIn(false);
