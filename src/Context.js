@@ -28,7 +28,7 @@ export const ContextProvider = (props) => {
     const API_URL = process.env.NODE_ENV === "development" ? "http://localhost:8080" : "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
     const history = useHistory();
     const socket = require("socket.io-client")(`ws://${API_URL.split("//")[1]}`, {
-        transports: ["polling", "websocket"]
+        transports: ["websocket"]
     });
     const [game, setGame] = useState(null);
     const [currentPlayer, setCurrentPlayer] = useState(null);
@@ -65,7 +65,6 @@ export const ContextProvider = (props) => {
                 .then(data => {
                     setGame(data);
                     setCurrentPlayer(data.players.find(player => player.id === user.uid))
-                    setTimeTillNext(5);
                    // window.location.reload()
                 })
             })
@@ -108,8 +107,10 @@ export const ContextProvider = (props) => {
                                 setCurrentPlayer(player)
                                 setGameRoom(room);
                                 setGame(data[room])
+                               
                                 setTimeTillNext(data[room].timeTillNextCall);
                                 setStarted(data[room].started)
+                                
                                 break;
                             };
                         }
