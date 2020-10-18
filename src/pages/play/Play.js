@@ -1,10 +1,11 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Context } from '../../Context';
 
 import "./Play.css";
 
 export default () => {
     const {game, API_URL, currentPlayer, timeTillNext} = useContext(Context);
+    const [message, setMessage] = useState("");
     function start() {
        // console.log(game.key)
         fetch(`${API_URL}/start/${game.key}`, {method: "PUT"})
@@ -20,6 +21,10 @@ export default () => {
                 console.log(data);
             })
     }
+    function sendMessage() {
+        setMessage("");
+        fetch(`${API_URL}/chat/${game.key}?from=${currentPlayer.name}&body=${message}`, {method: "PUT"});
+    }
     return (
         <>
         {game && (
@@ -34,8 +39,8 @@ export default () => {
             <br />
             <div>
                 <h3> Players({game.players.length}): </h3>
-                {game.players.map(player => (
-                    <div> {player.name} {player.id === currentPlayer.id && "(You)"} {player.id === game.hostid && "(Host)"} </div>
+                {game.players.map((player, i) => (
+                    <div key = {`player${i}`}> {player.name} {player.id === currentPlayer.id && "(You)"} {player.id === game.hostid && "(Host)"} </div>
                 ))}
             </div>
             {(game.started && !game.ended) ?
@@ -53,20 +58,35 @@ export default () => {
             <h3> Your money: ${currentPlayer.money}</h3>
             <h3> Your Tickets: </h3>
             {!currentPlayer.tickets.length && `You have no tickets yet, buy one by clicking on "Buy Ticket"`}
-            {currentPlayer.tickets.map(ticket => (
-                <>
-                <div className = "ticket">
-                    {ticket.map(row => row.map(square => (
-                        <div className = {`square ${square && square.covered? "covered" : ""}`} style = {{background: !square && "pink"}}>
-                            {square && square.value}
-                            
-                        </div>
-                    )))}
-                   
+            <div className = "tickets">
+                {currentPlayer.tickets.map((ticket, i) => (
+                    <>
+                    <div className = "ticket" key = {`ticket${i}`}>
+                        {ticket.map(row => row.map(square => (
+                            <div className = {`square ${square && square.covered? "covered" : ""}`} style = {{background: !square && "pink"}}>
+                                {square && square.value}
+                                
+                            </div>
+                        )))}
+                    
+                    </div>
+                    </>
+                ))}
+            </div>
+            <div className = "side-panel">
+                <h2> CHAT</h2>
+                {game.chat.map((message, i) => (
+                    <div className = "message" key = {`message${i}`}>
+                        {(i === 0 || game.chat[i - 1].from != message.from) ? <strong> {message.from}: </strong> : <br />}
+                        {message.body}
+                    </div>
+                ))}
+                <div className = "send-message">
+                    <input value = {message} onChange = {e => setMessage(e.target.value)} />
+                    <button onClick = {sendMessage}> Send Message </button>
                 </div>
-                </>
-            ))}
-            {game.enableAutoMark ? <> <br />Auto-mark is enabled. This means the computer will automatically mark off a number on your ticket(s) when it is called. </>: ""}
+            </div>
+            {game.enableAutoMark ? <> <br /> <br />Auto-mark is enabled. This means the computer will automatically mark off a number on your ticket(s) when it is called. </>: ""}
             </div>
         )}
         </>

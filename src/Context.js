@@ -25,11 +25,11 @@ export const Context = React.createContext();
 export const ContextProvider = (props) => {
     const [error, setError] = useState("");
     const [email, setEmail] = useState("");
-    const API_URL = process.env.NODE_ENV === "development" ? "http://localhost:8080" : "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
+    const API_URL = 
+        process.env.NODE_ENV === "development" ? "http://localhost:8080" : 
+        "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
     const history = useHistory();
-    const socket = require("socket.io-client")(`ws://${API_URL.split("//")[1]}`, {
-        transports: ["websocket"]
-    });
+    const socket = require("socket.io-client")(`http://${API_URL.split("//")[1]}`);
     const [game, setGame] = useState(null);
     const [currentPlayer, setCurrentPlayer] = useState(null);
     const [gameRoom, setGameRoom] = useState(null);
