@@ -23,7 +23,9 @@ export default () => {
     return (
         <>
         {game && (
+
             <div style = {{margin: 10}}>
+
             <div style = {{display: "none"}}>
 
                 {game.key}
@@ -39,7 +41,7 @@ export default () => {
             {(game.started && !game.ended) ?
             <> 
             <h2> Last number called: {game.lastNumberCalled}</h2>
-            <h4> Next number will be called in {timeTillNext? timeTillNext : "calculating..."} </h4>
+            <h4> Next number will be called in {timeTillNext} </h4>
             <button onClick = {callBingo}> Call Bingo(This will gain you money if you have 5 in a row or full house) </button>
             </>:
             !game.ended && <>
@@ -64,6 +66,7 @@ export default () => {
                 </div>
                 </>
             ))}
+            {game.enableAutoMark ? "Auto-mark is enabled. This means the computer will automatically mark off a number on your ticket(s) when it is called." : ""}
             </div>
         )}
         </>
