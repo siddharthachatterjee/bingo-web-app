@@ -22,8 +22,8 @@ export default () => {
             })
     }
     function sendMessage() {
-        setMessage("");
         fetch(`${API_URL}/chat/${game.key}?from=${currentPlayer.name}&body=${message}`, {method: "PUT"});
+        setMessage("");
     }
     return (
         <>
@@ -77,7 +77,7 @@ export default () => {
                 <h2> CHAT</h2>
                 {game.chat.map((message, i) => (
                     <div className = "message" key = {`message${i}`}>
-                        {(i === 0 || game.chat[i - 1].from != message.from) ? <strong> {message.from}: </strong> : <br />}
+                        {(i === 0 || game.chat[i - 1].from != message.from) && <strong> {message.from}: </strong>}
                         {message.body}
                     </div>
                 ))}
