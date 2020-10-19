@@ -25,7 +25,7 @@ const API_URL =
   //  process.env.NODE_ENV === "development" ? "http://localhost:8080" : 
     "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
 
-const socket = require("socket.io-client")(`http://${API_URL.split("//")[1]}`);
+const socket = require("socket.io-client")(API_URL);
 console.log("TIMELINE");
 export const ContextProvider = (props) => {
     const [error, setError] = useState("");
