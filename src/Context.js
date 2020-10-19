@@ -15,21 +15,22 @@
  * from Siddhartha Chatterjee.
  */
 import React, { useEffect, useState } from "react";
-
 import {useHistory} from "react-router-dom";
 
 import firebase from "./firebase";
 
 export const Context = React.createContext();
+const time = new Date().getTime();
+const API_URL = 
+  //  process.env.NODE_ENV === "development" ? "http://localhost:8080" : 
+    "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
 
+const socket = require("socket.io-client")(`http://${API_URL.split("//")[1]}`);
+console.log("TIMELINE");
 export const ContextProvider = (props) => {
     const [error, setError] = useState("");
     const [email, setEmail] = useState("");
-    const API_URL = 
-        process.env.NODE_ENV === "development" ? "http://localhost:8080" : 
-        "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
     const history = useHistory();
-    const socket = require("socket.io-client")(`http://${API_URL.split("//")[1]}`);
     const [game, setGame] = useState(null);
     const [currentPlayer, setCurrentPlayer] = useState(null);
     const [gameRoom, setGameRoom] = useState(null);
@@ -38,35 +39,34 @@ export const ContextProvider = (props) => {
     const [timeTillNext, setTimeTillNext] = useState(0);
     const [started, setStarted] = useState(false);
 
+    function fetchGame() {
+        fetch(`${API_URL}/games/${gameRoom}`)
+            .then(res => res.json())
+            .then(data => {
+                setGame(data);
+                setCurrentPlayer(data.players.find(player => player.id === user.uid));
+            })
+    }
+
     useEffect(() => {
         if (gameRoom) {
             socket.on(`game${gameRoom}-updated`, (data) => {
                 setGame(data);
-                
                 if (data.started && !started) setStarted(true)
                 setCurrentPlayer(data.players.find(player => player.id === user.uid))
                // console.log(data);
             });
             socket.on(`full-house-${gameRoom}`, player => {
                 alert(`${player.name} achieved full house and gained +$${player.increase}`);
-                fetch(`${API_URL}/games/${gameRoom}`)
-                .then(res => res.json())
-                .then(data => {
-                    setGame(data);
-                    setCurrentPlayer(data.players.find(player => player.id === user.uid))
-                    setTimeTillNext(5);
-                   // window.location.reload()
-                })
+                fetchGame();
             });
             socket.on(`five-in-row-${gameRoom}`, player => {
                 alert(`${player.name} achieved five in row and gained +$${player.increase}`);
-                fetch(`${API_URL}/games/${gameRoom}`)
-                .then(res => res.json())
-                .then(data => {
-                    setGame(data);
-                    setCurrentPlayer(data.players.find(player => player.id === user.uid))
-                   // window.location.reload()
-                })
+                fetchGame();
+            })
+            socket.on(`false-bingo-${gameRoom}`, player => {
+                alert(`${player.name} called bingo incorrectly and lost -$2`)
+                fetchGame();
             })
         }
     // eslint-disable-next-line
@@ -92,10 +92,17 @@ export const ContextProvider = (props) => {
     }, [started, timeTillNext])
     const [user, setUser] = useState(firebase.auth().currentUser)
     useEffect(() => {
-        
+        let lastTime = new Date().getTime() - time;
+        console.log(`App loaded - ${lastTime}ms`)
+        socket.on("connect", () => {
+            console.log(`Websocket loaded - ${new Date().getTime() - time}ms [took ${(new Date().getTime() - time) - lastTime}ms]`);
+            lastTime = new Date().getTime() - time;
+        })
         firebase.auth().onAuthStateChanged(firebaseUser => {
             setUser(firebaseUser)
             setLoaded(true);
+            console.log(`Auth loaded - ${new Date().getTime() - time}ms [took ${(new Date().getTime() - time) - lastTime}ms]`)
+            lastTime = new Date().getTime() - time;
             if (firebaseUser) {
                 fetch(`${API_URL}/games`)
                     .then(res => res.json())
@@ -110,14 +117,15 @@ export const ContextProvider = (props) => {
                                
                                 setTimeTillNext(data[room].timeTillNextCall);
                                 setStarted(data[room].started)
-                                
+                                console.log(`Game loaded - ${(new Date().getTime() - time)}ms [took ${((new Date().getTime() - time) - lastTime)}ms]`);
+                                lastTime = new Date().getTime() - time;
                                 break;
                             };
                         }
                     })
                 }
         })
-    }, [API_URL])
+    }, [])
     const [password, setPassword] = useState("");
     function signIn() {
         setLoggingIn(true);

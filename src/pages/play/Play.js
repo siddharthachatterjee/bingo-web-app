@@ -60,24 +60,24 @@ export default () => {
             {!currentPlayer.tickets.length && `You have no tickets yet, buy one by clicking on "Buy Ticket"`}
             <div className = "tickets">
                 {currentPlayer.tickets.map((ticket, i) => (
-                    <>
+                    
                     <div className = "ticket" key = {`ticket${i}`}>
-                        {ticket.map(row => row.map(square => (
-                            <div className = {`square ${square && square.covered? "covered" : ""}`} style = {{background: !square && "pink"}}>
+                        {ticket.map(row => row.map((square, j) => (
+                            <div key = {`ticket${i}-square${j}`}className = {`square ${square && square.covered? "covered" : ""}`} style = {{background: !square && "pink"}}>
                                 {square && square.value}
                                 
                             </div>
                         )))}
                     
                     </div>
-                    </>
+                   
                 ))}
             </div>
             <div className = "side-panel">
                 <h2> CHAT</h2>
                 {game.chat.map((message, i) => (
                     <div className = "message" key = {`message${i}`}>
-                        {(i === 0 || game.chat[i - 1].from != message.from) && <strong> {message.from}: </strong>}
+                        {(i === 0 || game.chat[i - 1].from !== message.from) && <strong> {message.from}: </strong>}
                         {message.body}
                     </div>
                 ))}
