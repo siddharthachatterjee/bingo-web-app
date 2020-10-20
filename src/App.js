@@ -26,7 +26,7 @@ import Play from './pages/play/Play';
 
 
 function App() {
-  const {loaded, gameRoom} = useContext(Context);
+  const {loaded, gameRoom, user} = useContext(Context);
   return (
     <>
     {gameRoom && <Redirect to = "/play" />}
@@ -39,7 +39,7 @@ function App() {
         <New />
       </Route>
       <Route path = "/auth">
-        <Auth />
+        {user? <Redirect to = "/" /> : <Auth />}
       </Route>
       <Route path = "/join">
         <Join />

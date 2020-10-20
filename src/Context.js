@@ -89,20 +89,20 @@ export const ContextProvider = (props) => {
             }
         }
     // eslint-disable-next-line
-    }, [started, timeTillNext])
+}, [started, timeTillNext])
     const [user, setUser] = useState(firebase.auth().currentUser)
     useEffect(() => {
         let lastTime = new Date().getTime() - time;
-        console.log(`App loaded - ${lastTime}ms`)
+        console.log(`Context loaded - ${lastTime}ms`)
         socket.on("connect", () => {
-            console.log(`Websocket loaded - ${new Date().getTime() - time}ms [took ${(new Date().getTime() - time) - lastTime}ms]`);
-            lastTime = new Date().getTime() - time;
+            console.log(`Websocket loaded - ${new Date().getTime() - time}ms`);
+           // lastTime = new Date().getTime() - time;
         })
         firebase.auth().onAuthStateChanged(firebaseUser => {
             setUser(firebaseUser)
             setLoaded(true);
-            console.log(`Auth loaded - ${new Date().getTime() - time}ms [took ${(new Date().getTime() - time) - lastTime}ms]`)
-            lastTime = new Date().getTime() - time;
+            console.log(`Auth loaded - ${new Date().getTime() - time}ms`)
+           // lastTime = new Date().getTime() - time;
             if (firebaseUser) {
                 fetch(`${API_URL}/games`)
                     .then(res => res.json())
@@ -117,7 +117,7 @@ export const ContextProvider = (props) => {
                                
                                 setTimeTillNext(data[room].timeTillNextCall);
                                 setStarted(data[room].started)
-                                console.log(`Game loaded - ${(new Date().getTime() - time)}ms [took ${((new Date().getTime() - time) - lastTime)}ms]`);
+                                console.log(`Game loaded - ${(new Date().getTime() - time)}ms`);
                                 lastTime = new Date().getTime() - time;
                                 break;
                             };
@@ -135,7 +135,7 @@ export const ContextProvider = (props) => {
                 setLoggingIn(false);
                 setUser(firebase.auth().currentUser);
                
-                window.location = window.location.search.split("=")[1] || "/profile"
+                window.location = window.location.search.split("=")[1] || "/"
             })
             .catch(err => {
                 setLoggingIn(false);
@@ -153,7 +153,7 @@ export const ContextProvider = (props) => {
                 }).then(() => {
                     firebase.auth().currentUser.sendEmailVerification();
                     setUser(firebase.auth().currentUser);
-                    window.location = window.location.search.split("=")[1] || "/profile"
+                    window.location = window.location.search.split("=")[1] || "/"
                 })
             })
             .catch(err => {

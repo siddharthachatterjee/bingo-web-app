@@ -1,3 +1,10 @@
+.play {
+    background-image: url(/images/home-background.jpeg);
+    background-size: cover;
+    width: calc(100vw - 20px);
+    height: calc(100vh - 20px);
+    padding: 10px;
+}
 .ticket {
     display: grid;
     grid-template-columns: repeat(9, 25px);

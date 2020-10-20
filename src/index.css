@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  z-index: 0;
 }
 
 code {
@@ -12,6 +13,21 @@ code {
     monospace;
 }
 
-.cover-layer {
-  
+.cover-layer { 
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background-color: whitesmoke;
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0.6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+/* body {
+  background-image: url(/images/home-background.jpeg);
+  background-size: cover;
+} */

@@ -1,0 +1,171 @@
+.home {
+    background-image: url(/images/home-background.jpeg);
+    background-size: cover;
+    animation: fade-in 1.5s forwards;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+       
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.options {
+    width: 300px;
+    color: white;
+    background: #1c1c1c;
+    border-radius: 10px;
+    opacity: 0.8;
+    padding: 2em;
+    position: relative;
+    animation: slide-down 1.5s forwards;
+}
+
+
+
+.home h1 {
+    text-align: center;
+    font-family: 'Sora';
+    font-size: 60px;
+    line-height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home h1 i {
+    color: green;
+}
+
+.home span {
+    text-align: center;
+    
+    display: block;
+    font-weight: bold;
+    color: blue;
+}
+
+
+.btn {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    font-size: 18px;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    border-width: 5px;
+    border-radius:10px;
+    padding: 10px;
+    transition: all 0.5s;
+   
+}
+
+.btn:disabled {
+    cursor: not-allowed
+}
+
+.btn:hover {
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.1);
+    font-size: 19px;
+}
+
+.small-btns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.small-btn{
+    width: calc(50% - 5px);
+    
+    font-size: 13px;
+    display: inline-block
+}
+.small-btn:hover {
+    font-size: 13px;
+}
+
+.green {
+    background-color: green;
+    border-color: green;
+}
+
+.green:hover {
+    background-color: darkgreen;
+    border-color: darkgreen;
+}
+
+.purple {
+    background-color: darkviolet;
+    border-color: darkviolet;
+}
+
+.purple:hover {
+    background-color: purple;
+    border-color: purple;
+}
+
+.orange {
+    /* background-color: rgb(74, 134, 245);
+    border-color: rgb(74, 134, 245); */
+    background-color: orangered;
+    border-color: orangered;
+}
+
+.orange:hover {
+    background-color: red;
+    border-color: red;
+}
+
+
+
+.blue {
+    background-color: dodgerblue;
+    border-color: dodgerblue;
+}
+
+.blue:hover {
+    background-color: blue;
+    border-color: blue;
+}
+
+.code-inpt {
+    width: calc(100% - 2em - 5px);
+    padding: .5em 1em;
+    margin-bottom: 20px;
+    font-size: 40px;
+    background: none;
+    outline: none;
+    color: white;
+    border: none;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.txt-inpt {
+    width: calc(100% - 1em - 5px);
+    padding: .5em;
+    margin: 20px 0;
+    font-size: 18px;
+    border-radius: 5px;
+    outline: none;
+    /* background: none; */
+    border: none;
+}
+
+.slct {
+    width: 100%;
+}

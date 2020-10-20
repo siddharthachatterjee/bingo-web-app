@@ -8,22 +8,35 @@ export default () => {
     const {email, setEmail, password, setPassword, signIn, signUp, error, loggingIn} = useContext(Context);
     return (
         <>
-        {window.location.search && 
-        <>
-            Sign in to continue
-            <br />
-        </>}
-        
-        <input type = "text" name = "email" value = {email} onChange = {e => setEmail(e.target.value)} />
-        <input type = "password" name = "password" value = {password} onChange = {e => setPassword(e.target.value)} />
-        <br />
-        <button onClick = {signIn}> Sign In </button>
-        <button onClick = {signUp}> Sign Up </button>
-        <br />
-        {loggingIn ? "Logging in..." :         
-        <div style = {{color: "red"}}>
-            {error.message}
-        </div>}
+        <div className = "home">
+            <div>
+                <h1> BING<i className="ri-focus-2-line"></i></h1>
+                <div className = "options">          
+                    {
+                    <>
+                        <h2 style = {{textAlign: "center"}}> Sign In {window.location.search && "to Continue"} </h2>
+                    
+                    </>}
+                    <label for = "email"> Email </label>
+                    <input autoComplete = "off" className = "txt-inpt"type = "text" name = "email" value = {email} onChange = {e => setEmail(e.target.value)} />
+                    <label for = "password"> Password </label>
+                    <input autoComplete = "new-password" type = "password" className = "txt-inpt" name = "password" value = {password} onChange = {e => setPassword(e.target.value)} />
+                    <br />
+                    <button className = "btn green"onClick = {signIn}> Sign In </button>
+                    <button className = "btn purple"onClick = {signUp}> Sign Up </button>
+                
+                    <br />
+                    {loggingIn ? 
+                    <div className = "cover-layer">
+                        Logging in...
+                    </div>
+                    :         
+                    <div style = {{color: "red"}}>
+                        {error.message}
+                    </div>}
+                </div>
+            </div>
+        </div>
         </>
     );
 }

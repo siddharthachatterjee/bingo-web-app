@@ -20,13 +20,26 @@ export default () => {
         <>
 
         {user?
+    
         <>
-        type: 
-        <select>
-            <option value = {0}> 90 ball bingo </option>
-        </select>
-        <br />
-        <button onClick = {createGame}> Create </button>
+        <div className = "home">
+            <div>
+                <h1> BING<i className="ri-focus-2-line"></i></h1>
+                <div className = "options">
+                    <h2 style = {{textAlign: "center"}}> Create a Room </h2>
+                    <br />
+                    <label for = "type" style = {{fontSize: 18, marginRight: 20}}> Type   </label>
+                   
+                    <select className = "green btn small-btn">
+                        <option value = {0}> 90 ball bingo </option>
+                    </select>
+                    <br />
+                    <br />
+                    <hr />
+                    <button className = "btn orange" onClick = {createGame}> Create </button>
+                </div>
+            </div>
+        </div>
         </>:
         <Redirect to = "/auth?return=/new" />
         }

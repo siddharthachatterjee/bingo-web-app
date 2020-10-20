@@ -28,15 +28,16 @@ export default () => {
     return (
         <>
         {game && (
+            
 
-            <div style = {{margin: 10}}>
+            <div className = "play">
 
             <div style = {{display: "none"}}>
 
                 {game.key}
                 {currentPlayer.id}
             </div>
-            <br />
+            <h2> Game Code: {game.key} </h2>
             <div>
                 <h3> Players({game.players.length}): </h3>
                 {game.players.map((player, i) => (
@@ -51,7 +52,7 @@ export default () => {
             </>:
             !game.ended && <>
             
-            <button  onClick = {start}> Start Game </button>
+            {currentPlayer.id === game.hostid && <button  onClick = {start}> Start Game </button>}
             {currentPlayer.money > 2 && <button value = "buy"onClick = {buyTicket}> Buy Ticket (Costs $2)</button>}
             </>}
             
