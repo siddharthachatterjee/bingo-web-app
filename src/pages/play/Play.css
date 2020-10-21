@@ -4,11 +4,19 @@
     width: calc(100vw - 20px);
     height: calc(100vh - 20px);
     padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 500px) {
+    .play {
+        flex-direction: column;
+    }
 }
 .ticket {
     display: grid;
-    grid-template-columns: repeat(9, 25px);
-    grid-template-rows: repeat(3, 25px);
+    grid-template-columns: repeat(9, 55px);
+    grid-template-rows: repeat(3, 55px);
     margin: 10px;
     overflow: hidden;
     width: max-content;
@@ -16,10 +24,27 @@
     gap: 2px;
 }
 
+.play main {
+    margin: 0 20px;
+}
+
+.play main h2  {
+    background: #1c1c1c;
+    color: white;
+    padding: 1em;
+    margin: 0;
+   
+    opacity: 0.8;
+    border-radius: 10px;
+}
+
 .square {
     border: 1px solid grey;
     border-radius: 5px;
     text-align: center;
+   font-size: 20px;
+    
+    background-color: white;
 }
 
 .covered {
@@ -27,3 +52,4 @@
     text-decoration: line-through;
     background-color: lightgray;
 }
+

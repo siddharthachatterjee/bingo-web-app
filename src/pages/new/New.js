@@ -13,7 +13,7 @@ export default () => {
             .then(game => {
                 
                 window.location = "/play";
-                alert("Invite people to play by going to http://localhost:3000/join and entering code " + game.key);
+               // alert("Invite people to play by going to http://localhost:3000/join and entering code " + game.key);
             })
     }
     return (
