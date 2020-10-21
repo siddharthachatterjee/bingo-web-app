@@ -30,7 +30,7 @@
     border-radius: 10px;
     opacity: 0.8;
     padding: 2em;
-    height: max-content;
+    /* height: max-content; */
     max-height: calc(100vh - 20px);
     overflow-y: auto;
     

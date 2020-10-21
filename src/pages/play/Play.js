@@ -80,6 +80,12 @@ export default () => {
                     {game.hostid !== currentPlayer.id && <div> <br /> You cannot start the game, because you are not the host. Waiting for host to start the game... </div>}
                 </>}
                 <br />
+                {(game.started && !game.ended) &&
+                <> 
+                <h2> Last number called: {game.lastNumberCalled}</h2>
+                <h4> Next number will be called in {timeTillNext} </h4>
+                {(!currentPlayer.fullHouse && currentPlayer.coveredRows.length < 4) && <button onClick = {callBingo} className = "btn blue"> Call Bingo </button>}
+                </>}
                 <hr />
                 <h2> CHAT </h2> 
                 
@@ -100,12 +106,7 @@ export default () => {
                     {/* <button className = "btn blue"onClick = {sendMessage}> Send Message </button> */}
                 </div>
             </div> 
-            {(game.started && !game.ended) &&
-            <> 
-            <h2> Last number called: {game.lastNumberCalled}</h2>
-            <h4> Next number will be called in {timeTillNext} </h4>
-            {(!currentPlayer.fullHouse && currentPlayer.coveredRows.length < 4) && <button onClick = {callBingo}> Call Bingo(This will gain you money if you have 5 in a row or full house) </button>}
-            </>}
+           
 
             <main>
 
