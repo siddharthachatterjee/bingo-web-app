@@ -54,8 +54,23 @@ export const ContextProvider = (props) => {
         if (gameRoom) {
             socket.on(`game${gameRoom}-updated`, (data) => {
                 setGame(data);
+                setLastNumberCalled(data.lastNumberCalled);
+                setTimeTillNext(data.timeTillNext);
                 if (data.started && !started) setStarted(true)
-                setCurrentPlayer(data.players.find(player => player.id === user.uid))
+                setCurrentPlayer(data.players.find(player => player.id === user.uid));
+                if (data.lastNumberCalled && data.timeTillNext === 0) {
+                    let voices = window.speechSynthesis.getVoices();
+             //   if (game.lastNumberCalled && timeTillNext === 0) {
+                    let voice = voices.find(voice => voice.name === "Google US English");
+                    let speech = new SpeechSynthesisUtterance();
+                    speech.voice = voice;
+                    speech.voiceURI = "native";
+                    speech.volume = 3;
+                    speech.rate = 0.8;
+                    speech.text = `${data.lastNumberCalled} was called!`;
+                    speech.lang = "en-US";
+                    window.speechSynthesis.speak(speech);
+                }
                // console.log(data);
             });
             socket.on(`full-house-${gameRoom}`, player => {
@@ -78,15 +93,15 @@ export const ContextProvider = (props) => {
         if (update.length) {
             let voices = window.speechSynthesis.getVoices();
                      //   if (game.lastNumberCalled && timeTillNext === 0) {
-                            let voice = voices.find(voice => voice.name === "Google US English");
-                            let speech = new SpeechSynthesisUtterance();
-                            speech.voice = voice;
-                            speech.voiceURI = "native";
-                            speech.volume = 3;
-                            speech.rate = 0.8;
-                            speech.text = update;
-                            speech.lang = "en-US";
-                            window.speechSynthesis.speak(speech);
+            let voice = voices.find(voice => voice.name === "Google US English");
+            let speech = new SpeechSynthesisUtterance();
+            speech.voice = voice;
+            speech.voiceURI = "native";
+            speech.volume = 3;
+            speech.rate = 0.8;
+            speech.text = update;
+            speech.lang = "en-US";
+            window.speechSynthesis.speak(speech);
             speech.onend = () => {
                 setUpdate("")
             }
@@ -94,41 +109,41 @@ export const ContextProvider = (props) => {
             window.speechSynthesis.cancel()
         }
     }, [update])
-    useEffect(() => {
-        if (started && game.availableNumbers.length) {
-            if (timeTillNext === 0) {
-                fetch(`${API_URL}/games/${gameRoom}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        setGame(data);
-                        setCurrentPlayer(data.players.find(player => player.id === user.uid))
-                        setTimeTillNext(15);
+//     useEffect(() => {
+//         if (started && game.availableNumbers.length) {
+//             if (timeTillNext === 0) {
+//                 fetch(`${API_URL}/games/${gameRoom}`)
+//                     .then(res => res.json())
+//                     .then(data => {
+//                         setGame(data);
+//                         setCurrentPlayer(data.players.find(player => player.id === user.uid))
+//                         setTimeTillNext(15);
                     
-                        setLastNumberCalled(data.lastNumberCalled);
-                        if (data.lastNumberCalled) {
-                            let voices = window.speechSynthesis.getVoices();
-                     //   if (game.lastNumberCalled && timeTillNext === 0) {
-                            let voice = voices.find(voice => voice.name === "Google US English");
-                            let speech = new SpeechSynthesisUtterance();
-                            speech.voice = voice;
-                            speech.voiceURI = "native";
-                            speech.volume = 3;
-                            speech.rate = 0.8;
-                            speech.text = `${data.lastNumberCalled} was called!`;
-                            speech.lang = "en-US";
-                            window.speechSynthesis.speak(speech);
-                        }
-                       // }
-                       // window.location.reload()
-                    })
-            } else {
-                setTimeout(() => {
-                    setTimeTillNext(prev => prev - 1);
-                }, 1000)
-            }
-        }
-    // eslint-disable-next-line
-}, [started, timeTillNext])
+//                         setLastNumberCalled(data.lastNumberCalled);
+//                         if (data.lastNumberCalled) {
+//                             let voices = window.speechSynthesis.getVoices();
+//                      //   if (game.lastNumberCalled && timeTillNext === 0) {
+//                             let voice = voices.find(voice => voice.name === "Google US English");
+//                             let speech = new SpeechSynthesisUtterance();
+//                             speech.voice = voice;
+//                             speech.voiceURI = "native";
+//                             speech.volume = 3;
+//                             speech.rate = 0.8;
+//                             speech.text = `${data.lastNumberCalled} was called!`;
+//                             speech.lang = "en-US";
+//                             window.speechSynthesis.speak(speech);
+//                         }
+//                        // }
+//                        // window.location.reload()
+//                     })
+//             } else {
+//                 setTimeout(() => {
+//                     setTimeTillNext(prev => prev - 1);
+//                 }, 1000)
+//             }
+//         }
+//     // eslint-disable-next-line
+// }, [started, timeTillNext])
     const [user, setUser] = useState(firebase.auth().currentUser)
     useEffect(() => {
         let lastTime = new Date().getTime() - time;
