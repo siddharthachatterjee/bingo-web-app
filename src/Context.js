@@ -21,7 +21,7 @@ import firebase from "./firebase";
 
 export const Context = React.createContext();
 const time = new Date().getTime();
-const API_URL = 
+export const API_URL = 
   //  process.env.NODE_ENV === "development" ? "http://localhost:8080" : 
     "http://bingo-api-env.eba-zpgsctry.us-west-1.elasticbeanstalk.com";
 
@@ -38,6 +38,8 @@ export const ContextProvider = (props) => {
     const [loaded, setLoaded] = useState(false);
     const [timeTillNext, setTimeTillNext] = useState(0);
     const [started, setStarted] = useState(false);
+    const [lastNumberCalled, setLastNumberCalled] = useState(null);
+    const [update, setUpdate] = useState("");
 
     function fetchGame() {
         fetch(`${API_URL}/games/${gameRoom}`)
@@ -57,20 +59,41 @@ export const ContextProvider = (props) => {
                // console.log(data);
             });
             socket.on(`full-house-${gameRoom}`, player => {
-                alert(`${player.name} achieved full house and gained +$${player.increase}`);
+                setUpdate(`${player.name} achieved full house and gained +$${player.increase}`);
+                
                 fetchGame();
             });
             socket.on(`five-in-row-${gameRoom}`, player => {
-                alert(`${player.name} achieved five in row and gained +$${player.increase}`);
+                setUpdate(`${player.name} achieved five in row and gained +$${player.increase}`);
                 fetchGame();
             })
             socket.on(`false-bingo-${gameRoom}`, player => {
-                alert(`${player.name} called bingo incorrectly and lost -$2`)
+                setUpdate(`${player.name} called bingo incorrectly and lost -$2`)
                 fetchGame();
             })
         }
     // eslint-disable-next-line
     }, [gameRoom])
+    useEffect(() => {
+        if (update.length) {
+            let voices = window.speechSynthesis.getVoices();
+                     //   if (game.lastNumberCalled && timeTillNext === 0) {
+                            let voice = voices.find(voice => voice.name === "Google US English");
+                            let speech = new SpeechSynthesisUtterance();
+                            speech.voice = voice;
+                            speech.voiceURI = "native";
+                            speech.volume = 3;
+                            speech.rate = 0.8;
+                            speech.text = update;
+                            speech.lang = "en-US";
+                            window.speechSynthesis.speak(speech);
+            speech.onend = () => {
+                setUpdate("")
+            }
+        } else {
+            window.speechSynthesis.cancel()
+        }
+    }, [update])
     useEffect(() => {
         if (started && game.availableNumbers.length) {
             if (timeTillNext === 0) {
@@ -79,7 +102,23 @@ export const ContextProvider = (props) => {
                     .then(data => {
                         setGame(data);
                         setCurrentPlayer(data.players.find(player => player.id === user.uid))
-                        setTimeTillNext(5);
+                        setTimeTillNext(15);
+                    
+                        setLastNumberCalled(data.lastNumberCalled);
+                        if (data.lastNumberCalled) {
+                            let voices = window.speechSynthesis.getVoices();
+                     //   if (game.lastNumberCalled && timeTillNext === 0) {
+                            let voice = voices.find(voice => voice.name === "Google US English");
+                            let speech = new SpeechSynthesisUtterance();
+                            speech.voice = voice;
+                            speech.voiceURI = "native";
+                            speech.volume = 3;
+                            speech.rate = 0.8;
+                            speech.text = `${data.lastNumberCalled} was called!`;
+                            speech.lang = "en-US";
+                            window.speechSynthesis.speak(speech);
+                        }
+                       // }
                        // window.location.reload()
                     })
             } else {
@@ -175,9 +214,12 @@ export const ContextProvider = (props) => {
             gameRoom,
             setGameRoom,
             timeTillNext,
+            lastNumberCalled,
             history,
             loggingIn,
-            loaded
+            loaded,
+            update,
+            setUpdate
         }}>
             {props.children}
         </Context.Provider>

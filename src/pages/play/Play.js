@@ -1,11 +1,33 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Context } from '../../Context';
+import { Context, API_URL } from '../../Context';
 
 import "./Play.css";
+
+function start(game, currentPlayer) {
+    // console.log(game.key)
+     fetch(`${API_URL}/start/${game.key}`, {method: "PUT"})
+ }
+ function buyTicket(game, currentPlayer) {
+   //  if (e.target.value === "buy")
+   console.log("hello world")
+     fetch(`${API_URL}/buy/${game.key}?playerid=${currentPlayer.id}&passcode=${game.key}`, {method: "put"})
+ }
+ function callBingo(game, currentPlayer) {
+     fetch(`${API_URL}/call-bingo/${game.key}?playerid=${currentPlayer.id}`, {method:"PUT"})
+         .then(res => res.text())
+         .then(data => {
+             console.log(data);
+         })
+ }
+ function sendMessage(game, currentPlayer, message) {
+     fetch(`${API_URL}/chat/${game.key}?from=${currentPlayer.name}&body=${message}`, {method: "PUT"});
+     //setMessage("");
+ }
 export default () => {
-    const {game, API_URL, currentPlayer, timeTillNext} = useContext(Context);
+    const {game, currentPlayer, timeTillNext, update, setUpdate, API_URL, lastNumberCalled} = useContext(Context);
     
     const [audio] = useState(new Audio("/music.mp3"))
+    
     const [message, setMessage] = useState("");
     const [playMusic, setPlayMusic] = useState(true);
     useEffect(() => {
@@ -13,6 +35,7 @@ export default () => {
         // audio.play()
         // if (audioElem) {
             if (playMusic) {
+                
                 audio.play();
                 audio.addEventListener("ended", () => {
                     audio.play()
@@ -22,26 +45,9 @@ export default () => {
             }
             // }
     }, [playMusic, audio])
+
+    
   
-    function start() {
-       // console.log(game.key)
-        fetch(`${API_URL}/start/${game.key}`, {method: "PUT"})
-    }
-    function buyTicket() {
-      //  if (e.target.value === "buy")
-        fetch(`${API_URL}/buy/${game.key}?playerid=${currentPlayer.id}`, {method: "PUT"})
-    }
-    function callBingo() {
-        fetch(`${API_URL}/call-bingo/${game.key}?playerid=${currentPlayer.id}`, {method:"PUT"})
-            .then(res => res.text())
-            .then(data => {
-                console.log(data);
-            })
-    }
-    function sendMessage() {
-        fetch(`${API_URL}/chat/${game.key}?from=${currentPlayer.name}&body=${message}`, {method: "PUT"});
-        setMessage("");
-    }
     return (
         <>
      
@@ -49,6 +55,18 @@ export default () => {
             
 
             <div className = "play">
+            {update && (
+                <>
+                <div className = "cover-layer"  onClick = {() => setUpdate("")}></div>
+                <div className = "modal" onClick = {() => setUpdate("")}>
+                    <h2> {update.split(" ")[0]}: </h2>
+                    <h3> {update.split(" ").slice(1).join(" ")}! </h3>
+                    <p>
+                        Click anywhere to close
+                    </p>
+                </div>
+                </>
+            )}
             <div className = "options">
                 <div style = {{display: "none"}}>
 
@@ -71,10 +89,10 @@ export default () => {
                 </button>
                 {!game.started && !game.ended && <>
                     {
-                    <button className = "btn green xsmall-btn"  onClick = {start} disabled = {game.hostid !== currentPlayer.id}> 
+                    <button className = "btn green xsmall-btn"  onClick = {() => start(game, currentPlayer)} disabled = {game.hostid !== currentPlayer.id}> 
                     <i className="ri-play-fill"></i>
                     </button>}
-                    {currentPlayer.money > 2 && <button  className = "btn purple xsmall-btn"value = "buy"onClick = {buyTicket}> Buy Ticket* </button>}
+                    {currentPlayer.money > 2 && <button  className = "btn purple xsmall-btn"value = "buy"onClick = {() => buyTicket(game, currentPlayer)}> Buy Ticket* </button>}
                     <br />
                     *Ticket costs $2
                     {game.hostid !== currentPlayer.id && <div> <br /> You cannot start the game, because you are not the host. Waiting for host to start the game... </div>}
@@ -82,29 +100,12 @@ export default () => {
                 <br />
                 {(game.started && !game.ended) &&
                 <> 
-                <h2> Last number called: {game.lastNumberCalled}</h2>
+                <h2> Last number called: {lastNumberCalled}</h2>
                 <h4> Next number will be called in {timeTillNext} </h4>
-                {(!currentPlayer.fullHouse && currentPlayer.coveredRows.length < 4) && <button onClick = {callBingo} className = "btn blue"> Call Bingo </button>}
+                {(!currentPlayer.fullHouse && currentPlayer.coveredRows.length < 4) && <button onClick = {() => callBingo(game, currentPlayer)} className = "btn blue"> Call Bingo </button>}
                 </>}
-                <hr />
-                <h2> CHAT </h2> 
                 
-                {game.chat.map((message, i) => (
-                    <div className = "message" key = {`message${i}`}>
-                        {(i === 0 || game.chat[i - 1].from !== message.from) && <strong> {message.from}: </strong>}
-                        {message.body}
-                    </div>
-                ))}
-                <div className = "send-message">
-                    <form onSubmit = {e => {
-                        e.preventDefault();
-                        sendMessage();
-                    }}>
-
-                        <input className = "txt-inpt" placeholder = "Your message..."value = {message} onChange = {e => setMessage(e.target.value)} />
-                    </form>
-                    {/* <button className = "btn blue"onClick = {sendMessage}> Send Message </button> */}
-                </div>
+                
             </div> 
            
 
@@ -117,11 +118,11 @@ export default () => {
                     {currentPlayer.tickets.map((ticket, i) => (
                         
                         <div className = "ticket" key = {`ticket${i}`}>
-                            {ticket.map(row => row.map((square, j) => (
-                                <div key = {`ticket${i}-square${j}`}className = {`square ${square && square.covered? "covered" : ""}`} style = {{background: !square && "darkviolet"}}>
+                            {ticket.map((row, j) => row.map((square, k) => (
+                                <button title = {square && square.value === lastNumberCalled && "Mark this square"}onClick = {() => fetch(`${API_URL}/mark/${game.key}?playerid=${currentPlayer.id}&ticket=${i}&row=${j}&col=${k}`, {method: "PUT"})} disabled = {!square || game.lastNumberCalled !== square.value} key = {`ticket${i}${j}${k}`}className = {`square ${square && square.covered? "covered" : ""}`} style = {{background: !square && "darkviolet"}}>
                                     {square && square.value}
                                     
-                                </div>
+                                </button>
                             )))}
                         
                         </div>
@@ -129,15 +130,38 @@ export default () => {
                     ))}
                 </div>
             </main>
-            <div className = "options">
+            <div className = "options" style = {{display: "flex", flexDirection: "column"}}>
                 <h2 style = {{margin: 0}}> Leaderboard </h2>
-                <hr />
+                
                 <ol>
 
                     {game.players.sort((player1, player2) => player2.money - player1.money).slice(0, 10).map((player, i) => (
                         <li> {player.name} - ${player.money}</li>
                     ))}
                 </ol>
+                <br />
+                <div style = {{height: 1, background: "white"}}></div>
+                <h2> CHAT </h2> 
+                <div className = "messages" style = {{overflowY: "scroll"}}>
+
+                    {game.chat.map((message, i) => (
+                        <div className = "message" key = {`message${i}`}>
+                            {(i === 0 || game.chat[i - 1].from !== message.from) && <strong> {message.from}: </strong>}
+                            {message.body}
+                        </div>
+                    ))}
+                </div>
+                <div className = "send-message">
+                    <form onSubmit = {e => {
+                        e.preventDefault();
+                        sendMessage(game, currentPlayer, message);
+                        setMessage("")
+                    }}>
+
+                        <input className = "txt-inpt" placeholder = "Your message..."value = {message} onChange = {e => setMessage(e.target.value)} />
+                    </form>
+                    {/* <button className = "btn blue"onClick = {sendMessage}> Send Message </button> */}
+                </div>
             </div>
             
             {/* {game.enableAutoMark ? <> <br /> <br />Auto-mark is enabled. This means the computer will automatically mark off a number on your ticket(s) when it is called. </>: ""} */}

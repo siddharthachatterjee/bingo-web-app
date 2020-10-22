@@ -34,7 +34,7 @@
     max-height: calc(100vh - 20px);
     overflow-y: auto;
     
-    /* position: relative; */
+    position: relative;
     animation: slide-down 1.5s forwards;
 }
 
