@@ -4,7 +4,8 @@ import { Context } from '../../Context';
 
 import "./Auth.css";
 
-export default () => {
+
+export default (): JSX.Element => {
     const {email, setEmail, password, setPassword, signIn, signUp, error, loggingIn} = useContext(Context);
     return (
         <>
@@ -17,9 +18,9 @@ export default () => {
                         <h2 style = {{textAlign: "center"}}> Sign In {window.location.search && "to Continue"} </h2>
                     
                     </>}
-                    <label for = "email"> Email </label>
+                    <label htmlFor = "email"> Email </label>
                     <input autoComplete = "off" className = "txt-inpt"type = "text" name = "email" value = {email} onChange = {e => setEmail(e.target.value)} />
-                    <label for = "password"> Password </label>
+                    <label htmlFor = "password"> Password </label>
                     <input autoComplete = "new-password" type = "password" className = "txt-inpt" name = "password" value = {password} onChange = {e => setPassword(e.target.value)} />
                     <br />
                     <button className = "btn green"onClick = {signIn}> Sign In </button>
