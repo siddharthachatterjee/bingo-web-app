@@ -20,7 +20,7 @@ import './App.css';
 import { Context } from './Context';
 import Auth from './pages/auth/Auth.tsx';
 import Home from './pages/home/Home.tsx';
-import Join from './pages/join/Join';
+import Join from './pages/join/Join.tsx';
 import New from './pages/new/New';
 import Play from './pages/play/Play';
 

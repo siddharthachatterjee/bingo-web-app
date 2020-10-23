@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Context, API_URL } from '../../Context';
 
-import "./Play.css";
+import "./Play.scss";
 
 function start(game, currentPlayer) {
     // console.log(game.key)
