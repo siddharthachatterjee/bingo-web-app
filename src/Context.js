@@ -55,10 +55,10 @@ export const ContextProvider = (props) => {
             socket.on(`game${gameRoom}-updated`, (data) => {
                 setGame(data);
                 setLastNumberCalled(data.lastNumberCalled);
-                setTimeTillNext(data.timeTillNext);
+                setTimeTillNext(data.timeTillNextCall);
                 if (data.started && !started) setStarted(true)
                 setCurrentPlayer(data.players.find(player => player.id === user.uid));
-                if (data.lastNumberCalled && data.timeTillNext === 0) {
+                if (data.lastNumberCalled && data.timeTillNextCall === 0) {
                     let voices = window.speechSynthesis.getVoices();
              //   if (game.lastNumberCalled && timeTillNext === 0) {
                     let voice = voices.find(voice => voice.name === "Google US English");
