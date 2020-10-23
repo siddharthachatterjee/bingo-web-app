@@ -25,7 +25,7 @@ export default () => {
             .then((data) => {
                 //console.log(data);
                 if (!data.length) {
-                    window.location = "/play"
+                    window.location.pathname = "/play"
                 }
                 setJoining(false);
             })
