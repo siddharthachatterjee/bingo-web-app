@@ -28,7 +28,7 @@ export default () => {
                 <div className = "options">
                     <h2 style = {{textAlign: "center"}}> Create a Room </h2>
                     <br />
-                    <label for = "type" style = {{fontSize: 18, marginRight: 20}}> Type   </label>
+                    <label htmlFor = "type" style = {{fontSize: 18, marginRight: 20}}> Type   </label>
                    
                     <select className = "green btn small-btn">
                         <option value = {0}> 90 ball bingo </option>

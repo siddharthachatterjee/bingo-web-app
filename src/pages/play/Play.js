@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Context, API_URL } from '../../Context';
 
-import "./Play.scss";
+import "./Play.css";
 
 function start(game, currentPlayer) {
     // console.log(game.key)
@@ -36,6 +36,7 @@ export default () => {
         // if (audioElem) {
             if (playMusic) {
                 
+                audio.volume = 0.05;
                 audio.play();
                 audio.addEventListener("ended", () => {
                     audio.play()
@@ -52,8 +53,8 @@ export default () => {
         <>
      
         {game && (
-            
-
+            <>
+            {/* <h1> BING<i className="ri-focus-2-line"></i></h1> */}
             <div className = "play">
             {update && (
                 <>
@@ -67,7 +68,8 @@ export default () => {
                 </div>
                 </>
             )}
-            <div className = "options">
+            
+            <div className = "options first-panel">
                 <div style = {{display: "none"}}>
 
                     {game.key}
@@ -92,9 +94,12 @@ export default () => {
                     <button className = "btn green xsmall-btn"  onClick = {() => start(game, currentPlayer)} disabled = {game.hostid !== currentPlayer.id}> 
                     <i className="ri-play-fill"></i>
                     </button>}
-                    {currentPlayer.money > 2 && <button  className = "btn purple xsmall-btn"value = "buy"onClick = {() => buyTicket(game, currentPlayer)}> Buy Ticket* </button>}
+                    {currentPlayer.money > 2 && 
+                    <>
+                    <button  className = "btn purple xsmall-btn"value = "buy"onClick = {() => buyTicket(game, currentPlayer)}> Buy Ticket* </button>
                     <br />
                     *Ticket costs $2
+                    </>} 
                     {game.hostid !== currentPlayer.id && <div> <br /> You cannot start the game, because you are not the host. Waiting for host to start the game... </div>}
                 </>}
                 <br />
@@ -112,7 +117,7 @@ export default () => {
             <main>
 
                 <h2> Your money: ${currentPlayer.money}</h2>
-                <h3> Your Tickets: </h3>
+                <h3 style = {{textAlign: "center"}}> Your Tickets: </h3>
                 {!currentPlayer.tickets.length && `You have no tickets yet, buy one by clicking on "Buy Ticket"`}
                 <div className = "tickets">
                     {currentPlayer.tickets.map((ticket, i) => (
@@ -130,13 +135,13 @@ export default () => {
                     ))}
                 </div>
             </main>
-            <div className = "options" style = {{display: "flex", flexDirection: "column"}}>
+            <div className = "options third-panel" style = {{flexDirection: "column"}}>
                 <h2 style = {{margin: 0}}> Leaderboard </h2>
                 
                 <ol>
 
                     {game.players.sort((player1, player2) => player2.money - player1.money).slice(0, 10).map((player, i) => (
-                        <li> {player.name} - ${player.money}</li>
+                        <li key = {`leaderboard${i}`}> {player.name} - ${player.money}</li>
                     ))}
                 </ol>
                 <br />
@@ -166,6 +171,7 @@ export default () => {
             
             {/* {game.enableAutoMark ? <> <br /> <br />Auto-mark is enabled. This means the computer will automatically mark off a number on your ticket(s) when it is called. </>: ""} */}
             </div>
+            </>
         )}
         </>
     )

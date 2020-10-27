@@ -6,6 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   z-index: 0;
+  width: 100vw;
 }
 
 code {
@@ -27,7 +28,7 @@ code {
   align-items: center;
 }
 
-/* body {
+body {
   background-image: url(/images/home-background.jpeg);
   background-size: cover;
-} */
+}

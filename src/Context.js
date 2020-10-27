@@ -58,14 +58,14 @@ export const ContextProvider = (props) => {
                 setTimeTillNext(data.timeTillNextCall);
                 if (data.started && !started) setStarted(true)
                 setCurrentPlayer(data.players.find(player => player.id === user.uid));
-                if (data.lastNumberCalled && data.timeTillNextCall === 0) {
+                if (data.lastNumberCalled && data.timeTillNextCall === 5) {
                     let voices = window.speechSynthesis.getVoices();
              //   if (game.lastNumberCalled && timeTillNext === 0) {
                     let voice = voices.find(voice => voice.name === "Google US English");
                     let speech = new SpeechSynthesisUtterance();
                     speech.voice = voice;
                     speech.voiceURI = "native";
-                    speech.volume = 3;
+                   // speech.volume = 3;
                     speech.rate = 0.8;
                     speech.text = `${data.lastNumberCalled} was called!`;
                     speech.lang = "en-US";
@@ -109,41 +109,7 @@ export const ContextProvider = (props) => {
             window.speechSynthesis.cancel()
         }
     }, [update])
-//     useEffect(() => {
-//         if (started && game.availableNumbers.length) {
-//             if (timeTillNext === 0) {
-//                 fetch(`${API_URL}/games/${gameRoom}`)
-//                     .then(res => res.json())
-//                     .then(data => {
-//                         setGame(data);
-//                         setCurrentPlayer(data.players.find(player => player.id === user.uid))
-//                         setTimeTillNext(15);
-                    
-//                         setLastNumberCalled(data.lastNumberCalled);
-//                         if (data.lastNumberCalled) {
-//                             let voices = window.speechSynthesis.getVoices();
-//                      //   if (game.lastNumberCalled && timeTillNext === 0) {
-//                             let voice = voices.find(voice => voice.name === "Google US English");
-//                             let speech = new SpeechSynthesisUtterance();
-//                             speech.voice = voice;
-//                             speech.voiceURI = "native";
-//                             speech.volume = 3;
-//                             speech.rate = 0.8;
-//                             speech.text = `${data.lastNumberCalled} was called!`;
-//                             speech.lang = "en-US";
-//                             window.speechSynthesis.speak(speech);
-//                         }
-//                        // }
-//                        // window.location.reload()
-//                     })
-//             } else {
-//                 setTimeout(() => {
-//                     setTimeTillNext(prev => prev - 1);
-//                 }, 1000)
-//             }
-//         }
-//     // eslint-disable-next-line
-// }, [started, timeTillNext])
+
     const [user, setUser] = useState(firebase.auth().currentUser)
     useEffect(() => {
         let lastTime = new Date().getTime() - time;
